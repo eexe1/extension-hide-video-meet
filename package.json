@@ -1,0 +1,38 @@
+{
+  "name": "extension-hide-video-meet",
+  "version": "1.0.0",
+  "description": "Chrome extension that hides videos of Google Meet participants",
+  "scripts": {
+    "watch": "webpack --config webpack/webpack.dev.js --watch",
+    "build": "webpack --config webpack/webpack.prod.js",
+    "clean": "rimraf dist",
+    "test": "npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eexe1/extension-hide-video-meet.git"
+  },
+  "author": "Evan Tsai",
+  "license": "BSD 2-Clause",
+  "bugs": {
+    "url": "https://github.com/eexe1/extension-hide-video-meet/issues"
+  },
+  "homepage": "https://github.com/eexe1/extension-hide-video-meet#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.0.114",
+    "@types/jest": "^25.1.4",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.0.2",
+    "html-webpack-plugin": "^4.3.0",
+    "jest": "^25.1.0",
+    "rimraf": "^3.0.2 ",
+    "ts-jest": "^25.2.1",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.5",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2",
+    "zip-webpack-plugin": "^3.0.0"
+  }
+}
