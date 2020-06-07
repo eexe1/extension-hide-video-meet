@@ -4,46 +4,57 @@ import {
   VideoTagSelector,
   RemoveButtonSelector,
   ActionMenuButtonSelector,
-  VideoHiddenHolder,
   setVideoImage,
+  VideoControlHolder,
+  VideoControlFlag,
+  updateVideoStlye,
+  getVideoParent,
+  updateHiddenAttribute,
+  getVideoContainer,
+  addObserver,
 } from "./ui-helper";
 
-const getVideoContainer = (id: String) => {
-  const videoContainer = document.querySelector(videoContainerSelector(id));
-  if (!(videoContainer instanceof HTMLDivElement)) {
-    return undefined;
-  }
-
-  return videoContainer;
-};
+let observedParticipants: string[] = [];
 
 const hideVideoButtonClickHandler = (event: Event) => {
-  const element = event.currentTarget;
-  if (element instanceof HTMLDivElement) {
-    const participantId = element.getAttribute(IdHolder);
+  const buttonElement = event.currentTarget;
+  if (buttonElement instanceof HTMLDivElement) {
+    const participantId = buttonElement.getAttribute(IdHolder);
     if (!participantId) {
       return;
     }
 
+    // contain custom attributes
     const videoContainer = getVideoContainer(participantId);
     if (!videoContainer) {
       return;
     }
 
-    const videoElement = videoContainer.querySelector(VideoTagSelector);
-    if (videoElement instanceof HTMLVideoElement) {
-      const isHidden =
-        videoContainer.getAttribute(VideoHiddenHolder) == "1" ? true : false;
-      setVideoImage(element, !isHidden);
-      if (isHidden) {
-        videoContainer.style.display = "";
-        videoElement.play();
-        videoContainer.setAttribute(VideoHiddenHolder, "0");
-      } else {
-        videoContainer.style.display = "none";
-        videoElement.pause();
-        videoContainer.setAttribute(VideoHiddenHolder, "1");
+    // if multiple, gets the video being played
+    const elements = videoContainer.querySelectorAll(VideoTagSelector);
+
+    // video tag's immediate parent
+    const videoParent = getVideoParent(videoContainer);
+    if (!videoParent) {
+      return;
+    }
+
+    const isObserved = !!observedParticipants.find((p) => p === participantId);
+
+    if (!isObserved) {
+      addObserver(videoContainer, videoParent, buttonElement);
+    }
+
+    elements.forEach((video) => {
+      if (video.readyState !== 0) {
+        updateHiddenAttribute(videoContainer);
+        updateVideoStlye(videoContainer, video, buttonElement);
       }
+    });
+
+    if (!isObserved) {
+      // observer is added
+      observedParticipants.push(participantId);
     }
   }
 };
@@ -79,8 +90,23 @@ const setUpButton = (button: HTMLDivElement) => {
     if (!videoContainer) {
       return;
     }
+
+    const elements = videoContainer.querySelectorAll(VideoTagSelector);
+    let currentVideoElement: HTMLVideoElement | undefined;
+    elements.forEach((video) => {
+      if (video.readyState !== 0) {
+        currentVideoElement = video;
+      }
+    });
+    if (!currentVideoElement) {
+      return;
+    }
+
     const isHidden =
-      videoContainer.getAttribute(VideoHiddenHolder) == "1" ? true : false;
+      currentVideoElement.getAttribute(VideoControlHolder) ==
+      VideoControlFlag.HIDDEN
+        ? true
+        : false;
 
     const hideVideoButton = document.createElement("div");
     hideVideoButton.setAttribute(IdHolder, participantId);
