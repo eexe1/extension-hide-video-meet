@@ -3,7 +3,9 @@ import video from "./assets/video.svg";
 
 export const RemoveButtonSelector = "[data-tooltip*='remove' i]";
 export const ActionMenuButtonSelector =
-  "div[aria-label*='Show more actions for '][role='button']";
+  "div[aria-label*='Show more actions' i][role='button']";
+export const RemoveButtonSelectorFallback = "[jsname*='BUtajd' i]";
+export const ActionMenuButtonSelectorFallback = "[jsname*='z4Tpl' i]";
 export const VideoTagSelector = "video";
 export const IdHolder = "participant-id";
 export const VideoControlHolder = "control";

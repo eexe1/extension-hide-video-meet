@@ -4,6 +4,7 @@ import {
   VideoTagSelector,
   RemoveButtonSelector,
   ActionMenuButtonSelector,
+  ActionMenuButtonSelectorFallback,
   setVideoImage,
   VideoControlHolder,
   VideoControlFlag,
@@ -12,6 +13,7 @@ import {
   updateHiddenAttribute,
   getVideoContainer,
   addObserver,
+  RemoveButtonSelectorFallback,
 } from "./ui-helper";
 
 let observedParticipants: string[] = [];
@@ -64,8 +66,10 @@ const setUpButton = (button: HTMLDivElement) => {
     button.parentElement?.parentElement?.parentElement?.parentElement;
   if (personContainer instanceof HTMLDivElement) {
     let hasButton = false;
-    const actionContainer = personContainer.querySelector(RemoveButtonSelector)
-      ?.parentElement?.parentElement;
+    const actionContainer = (
+      personContainer.querySelector(RemoveButtonSelector) ??
+      personContainer.querySelector(RemoveButtonSelectorFallback)
+    )?.parentElement?.parentElement;
 
     if (!actionContainer) {
       return;
@@ -126,11 +130,14 @@ const actionMenuButtonClickHandler = (event: Event) => {
 
 // observe action menu
 new MutationObserver((mutationRecords, observer) => {
-  Array.from(document.querySelectorAll(ActionMenuButtonSelector)).forEach(
-    (element) => {
-      element.addEventListener("click", actionMenuButtonClickHandler);
-    }
-  );
+  let menuElements = document.querySelectorAll(ActionMenuButtonSelector);
+  if (menuElements.length === 0) {
+    menuElements = document.querySelectorAll(ActionMenuButtonSelectorFallback);
+  }
+
+  Array.from(menuElements).forEach((element) => {
+    element.addEventListener("click", actionMenuButtonClickHandler);
+  });
 }).observe(document.documentElement, {
   childList: true,
   subtree: true,
