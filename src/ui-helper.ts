@@ -1,7 +1,7 @@
 import noVideo from "./assets/novideo.svg";
 import video from "./assets/video.svg";
 
-export const RemoveButtonSelector = "[data-tooltip*='Remove from meeting']";
+export const RemoveButtonSelector = "[data-tooltip*='remove' i]";
 export const ActionMenuButtonSelector =
   "div[aria-label*='Show more actions for '][role='button']";
 export const VideoTagSelector = "video";
