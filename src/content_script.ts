@@ -1,10 +1,6 @@
 import {
   IdHolder,
-  videoContainerSelector,
   VideoTagSelector,
-  RemoveButtonSelector,
-  ActionMenuButtonSelector,
-  ActionMenuButtonSelectorFallback,
   setVideoImage,
   VideoControlHolder,
   VideoControlFlag,
@@ -13,7 +9,7 @@ import {
   updateHiddenAttribute,
   getVideoContainer,
   addObserver,
-  RemoveButtonSelectorFallback,
+  PersonItemSelector,
 } from "./ui-helper";
 
 let observedParticipants: string[] = [];
@@ -61,19 +57,14 @@ const hideVideoButtonClickHandler = (event: Event) => {
   }
 };
 
-const setUpButton = (button: HTMLDivElement) => {
-  const personContainer =
-    button.parentElement?.parentElement?.parentElement?.parentElement;
-  if (personContainer instanceof HTMLDivElement) {
+const setUpButton = (personElement: HTMLDivElement) => {
+  const personContainer = personElement;
+  const actionContainer = personContainer.lastChild;
+  if (
+    personContainer instanceof HTMLDivElement &&
+    actionContainer instanceof HTMLDivElement
+  ) {
     let hasButton = false;
-    const actionContainer = (
-      personContainer.querySelector(RemoveButtonSelector) ??
-      personContainer.querySelector(RemoveButtonSelectorFallback)
-    )?.parentElement?.parentElement;
-
-    if (!actionContainer) {
-      return;
-    }
 
     actionContainer.childNodes.forEach((value) => {
       if (value instanceof HTMLDivElement && value.hasAttribute(IdHolder)) {
@@ -82,16 +73,19 @@ const setUpButton = (button: HTMLDivElement) => {
     });
 
     if (hasButton) {
+      // console.log("already has button");
       return;
     }
 
     const participantId = personContainer.getAttribute("data-participant-id");
     if (!participantId) {
+      // console.log("Unable to find participant id");
       return;
     }
 
     const videoContainer = getVideoContainer(participantId);
     if (!videoContainer) {
+      // console.log("Unable to find video input");
       return;
     }
 
@@ -103,6 +97,7 @@ const setUpButton = (button: HTMLDivElement) => {
       }
     });
     if (!currentVideoElement) {
+      // console.log("Unable to find video input");
       return;
     }
 
@@ -113,6 +108,7 @@ const setUpButton = (button: HTMLDivElement) => {
         : false;
 
     const hideVideoButton = document.createElement("div");
+    hideVideoButton.style.display = "flex";
     hideVideoButton.setAttribute(IdHolder, participantId);
     setVideoImage(hideVideoButton, isHidden);
     hideVideoButton.addEventListener("click", hideVideoButtonClickHandler);
@@ -120,23 +116,17 @@ const setUpButton = (button: HTMLDivElement) => {
   }
 };
 
-const actionMenuButtonClickHandler = (event: Event) => {
-  const element = event.currentTarget;
-  if (element instanceof HTMLDivElement) {
-    // append the hide video button
-    setUpButton(element);
-  }
-};
-
 // observe action menu
 new MutationObserver((mutationRecords, observer) => {
-  let menuElements = document.querySelectorAll(ActionMenuButtonSelector);
-  if (menuElements.length === 0) {
-    menuElements = document.querySelectorAll(ActionMenuButtonSelectorFallback);
-  }
+  let personElements = document.querySelectorAll(PersonItemSelector);
 
-  Array.from(menuElements).forEach((element) => {
-    element.addEventListener("click", actionMenuButtonClickHandler);
+  Array.from(personElements).forEach((element, index) => {
+    if (index !== 0) {
+      if (element instanceof HTMLDivElement) {
+        // append the hide video button
+        setUpButton(element);
+      }
+    }
   });
 }).observe(document.documentElement, {
   childList: true,

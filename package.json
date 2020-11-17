@@ -1,6 +1,6 @@
 {
   "name": "extension-hide-video-meet",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Chrome extension that hides videos of Google Meet participants",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",

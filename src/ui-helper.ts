@@ -1,17 +1,13 @@
 import noVideo from "./assets/novideo.svg";
 import video from "./assets/video.svg";
 
-export const RemoveButtonSelector = "[data-tooltip*='remove' i]";
-export const ActionMenuButtonSelector =
-  "div[aria-label*='Show more actions' i][role='button']";
-export const RemoveButtonSelectorFallback = "[jsname*='BUtajd' i]";
-export const ActionMenuButtonSelectorFallback = "[jsname*='z4Tpl' i]";
+export const PersonItemSelector = "div[role='listitem']";
 export const VideoTagSelector = "video";
 export const IdHolder = "participant-id";
 export const VideoControlHolder = "control";
 const HideButtonIconId = "hide-video-icon";
 
-export const videoContainerSelector = (id: String) =>
+const videoContainerSelector = (id: String) =>
   `div[data-requested-participant-id='${id}']`;
 export const setVideoImage = (element: HTMLDivElement, hidden: Boolean) => {
   const imageElement = document.createElement("img");
