@@ -9,3 +9,7 @@ If an attendee does not have his/her video on, the video toggle will not be avai
 # Contact
 
 If you encouter any issue, please report to this email: clouderjustmakeit@gmail.com
+
+# Donation
+
+If you like this extension, feel free to chip in [Link](https://paypal.me/pools/c/8xegONieMZ).
